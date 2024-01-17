@@ -1,6 +1,6 @@
 # C-Sharp
-Libro de C#
-Parte 1: IDE, variables, ciclos, si condicional, funciones
+Libro de C# (455 páginas)<br>
+Parte 1: IDE, variables, ciclos, si condicional, funciones<br>
 Parte 2: Cadenas (strings)
 Parte 3: Arreglos estáticos
 Parte 4: Programación Orientada a Objetos
