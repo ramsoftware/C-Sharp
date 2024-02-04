@@ -43,7 +43,7 @@ namespace Ejemplo {
 			List<double> SalidaEsperada = [0, 0, 0, 0];
 
 			//Ciclo que entrena la red neuronal
-			int TotalCiclos = 90000; //Ciclos de entrenamiento
+			int TotalCiclos = 10000; //Ciclos de entrenamiento
 			for (int Ciclo = 1; Ciclo <= TotalCiclos; Ciclo++) {
 
 				if (Ciclo % 1000 == 0) Console.WriteLine("\r\nCiclo: " + Ciclo);
