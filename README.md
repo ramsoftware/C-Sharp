@@ -1,5 +1,5 @@
 # C-Sharp
-Libro de C# (564 páginas)<br>
+Libro de C# (1011 páginas)<br>
 Parte 1: IDE, variables, ciclos, si condicional, funciones<br>
 Parte 2: Cadenas (strings)<br>
 Parte 3: Arreglos estáticos<br>
@@ -11,4 +11,6 @@ Parte 8: Estructuras de datos de bajo nivel<br>
 Parte 9: Simulaciones<br>
 Parte 10: Algoritmos evolutivos<br>
 Parte 11: Redes Neuronales<br>
-Parte 12: Gráficos en C#<br>
+Parte 12: Gráficos 2D<br>
+Parte 13: Gráficos en 3D<br>
+Parte 14: Animación
