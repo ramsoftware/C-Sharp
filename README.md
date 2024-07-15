@@ -1,5 +1,5 @@
 # C-Sharp
-Libro de C# (1011 páginas)<br>
+Libros de C#<br>
 Parte 1: IDE, variables, ciclos, si condicional, funciones<br>
 Parte 2: Cadenas (strings)<br>
 Parte 3: Arreglos estáticos<br>
