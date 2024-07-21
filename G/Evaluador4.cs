@@ -8,7 +8,7 @@ using System.Text;
  * GitHub: https://github.com/ramsoftware
  * */
 
-namespace Ejemplo {
+namespace ArbolBinarioEvaluador {
 
 	internal class ParteEvl4 {
 		/* Constantes de los diferentes tipos
@@ -26,8 +26,8 @@ namespace Ejemplo {
 
 		/* Código de la función 0:seno, 1:coseno, 2:tangente,
 		 * 3: valor absoluto, 4: arcoseno, 5: arcocoseno,
-		 * 6: arcotangente, 7: logaritmo natural, 8: valor tope,
-		 * 9: exponencial, 10: raíz cuadrada */
+		 * 6: arcotangente, 7: logaritmo natural, 8: exponencial
+		 * 9: raíz cuadrada */
 		public int Funcion;
 
 		/* + suma - resta * multiplicación / división ^ potencia */
@@ -79,7 +79,7 @@ namespace Ejemplo {
 		/* Código de la función 0:seno, 1:coseno, 2:tangente,
 		 * 3: valor absoluto, 4: arcoseno, 5: arcocoseno,
 		 * 6: arcotangente, 7: logaritmo natural, 8: valor tope,
-		 * 9: exponencial, 10: raíz cuadrada, 11: raíz cúbica */
+		 * 9: exponencial, 10: raíz cuadrada */
 		public int Funcion;
 
 		/* Posición donde se almacena la primera parte de la pieza */
@@ -91,7 +91,6 @@ namespace Ejemplo {
 		/* Posición donde se almacena la segunda parte de la pieza */
 		public int pB;
 	}
-
 
 	internal class Evaluador4 {
 		/* Constantes de los diferentes tipos 
@@ -314,9 +313,8 @@ namespace Ejemplo {
 					case 5: Resulta = Math.Acos(Resulta); break;
 					case 6: Resulta = Math.Atan(Resulta); break;
 					case 7: Resulta = Math.Log(Resulta); break;
-					case 8: Resulta = Math.Ceiling(Resulta); break;
-					case 9: Resulta = Math.Exp(Resulta); break;
-					case 10: Resulta = Math.Sqrt(Resulta); break;
+					case 8: Resulta = Math.Exp(Resulta); break;
+					case 9: Resulta = Math.Sqrt(Resulta); break;
 				}
 
 				Valores[tmp.PosResultado] = Resulta;
@@ -538,7 +536,6 @@ namespace Ejemplo {
 			sbSintax.Replace("acs(", "a+(");
 			sbSintax.Replace("atn(", "a+(");
 			sbSintax.Replace("log(", "a+(");
-			sbSintax.Replace("cei(", "a+(");
 			sbSintax.Replace("exp(", "a+(");
 			sbSintax.Replace("sqr(", "a+(");
 
