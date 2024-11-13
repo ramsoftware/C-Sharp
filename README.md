@@ -13,4 +13,5 @@ Parte 10: Algoritmos evolutivos<br>
 Parte 11: Redes Neuronales<br>
 Parte 12: Gráficos 2D<br>
 Parte 13: Gráficos en 3D<br>
-Parte 14: Animación
+Parte 14: Animación<br>
+Parte 15: Imágenes<br>
