@@ -1,132 +1,104 @@
+using System.Text;
+
 namespace Ejemplo {
 
-	// El individuo es una posible solución al problema
-	internal class Individuo {
-		public int Puntos;
-		public string Cadena;
+    // El individuo es una posible solución al problema
+    internal class Individuo {
+        public int Puntos;
+        public StringBuilder Cadena;
+        public static StringBuilder Letras = new("abcdefghijklmnopqrstuvwxyz ");
 
-		public Individuo() {
-			Puntos = -1;
-			Cadena = string.Empty;
-		}
+        public Individuo() {
+            Puntos = -1;
+            Cadena = new();
+        }
 
-		//Operador mutación
-		//Cambia una letra al azar de la Cadena
-		public void Muta(Random Azar, string Letras) {
-			char[] Arreglo = Cadena.ToCharArray();
-			int PosA = Azar.Next(Cadena.Length);
-			int PosB = Azar.Next(Letras.Length);
-			Arreglo[PosA] = Letras[PosB];
-			Cadena = new string(Arreglo);
-		}
+        public Individuo(Random Azar, int Tamano) {
+            Puntos = -1;
+            Cadena = new();
+            for (int Cont = 0; Cont < Tamano; Cont++) {
+                int Pos = Azar.Next(Letras.Length);
+                Cadena.Append(Letras[Pos]);
+            }
+        }
 
-		//Operador cruce: Cruza dos cadenas en sitios al azar
-		public void Cruce(Random Azar, string CadenaA, string CadenaB) {
-			int Pos = Azar.Next(CadenaA.Length);
+        //Operador mutación: Cambia una letra al azar de la Cadena
+        public void Muta(Random Azar) {
+            int PosA = Azar.Next(Cadena.Length);
+            int PosB = Azar.Next(Letras.Length);
+            Cadena[PosA] = Letras[PosB];
+        }
 
-			//Cadena = IzquierdaA + DerechaB o
-			//Cadena = DerechaB + IzquierdaA
-			if (Azar.NextDouble() < 0.5)
-				Cadena = CadenaA[..Pos] + CadenaB[Pos..];
-			else
-				Cadena = CadenaB[Pos..] + CadenaA[..Pos];
-		}
+        //Puntaje del individuo
+        public void Evalua(StringBuilder CadenaBusca) {
+            Puntos = 0;
+            for (int Cont = 0; Cont < CadenaBusca.Length; Cont++)
+                if (CadenaBusca[Cont] == Cadena[Cont])
+                    Puntos++;
+        }
+    }
 
-		//Puntaje del individuo
-		public void Evalua(string CadenaBusca) {
-			Puntos = 0;
-			for (int Cont = 0; Cont < CadenaBusca.Length; Cont++)
-				if (CadenaBusca[Cont] == Cadena[Cont])
-					Puntos++;
-		}
-	}
+    internal class Program {
+        //Población: conjunto de individuos
+        static List<Individuo> Poblacion = [];
 
-	internal class Program {
+        static void Main() {
+            Random Azar = new();
+            StringBuilder CadenaBusca = new("esta es una prueba de algoritmos evolutivos");
+            OperadorMutacion(Azar, CadenaBusca);
+        }
 
-		//Con que letras se va a formar los individuos
-		private const string Letras = "abcdefghijklmnopqrstuvwxyz ";
-		
-		//Población: conjunto de individuos
-		static List<Individuo> Pobl = [];
+        // Operador cruce
+        static void OperadorMutacion(Random Azar, StringBuilder CadenaBusca) {
+            int TamanoPoblacion = 900;
+            int TotalCiclos = 90000;
 
-		static void Main() {
-			Random Azar = new();
+            //Crea la población de individuos
+            Poblacion.Clear();
+            for (int Cont = 0; Cont < TamanoPoblacion; Cont++) {
+                Poblacion.Add(new Individuo(Azar, CadenaBusca.Length));
+            }
 
-			string CadenaBusca = "prueba de algoritmos evolutivos";
-			CruceMuta(Azar, CadenaBusca);
-		}
+            //Proceso evolutivo
+            for (int Cont = 1; Cont <= TotalCiclos; Cont++) {
 
-		// Operador mutación
-		static void CruceMuta(Random Azar, string Busca) {
-			int TamanoPoblacion = 500;
-			int TotalCiclos = 50000;
+                //Selecciona dos individuos distintos al azar
+                int IndivA = Azar.Next(Poblacion.Count);
+                int IndivB;
+                do {
+                    IndivB = Azar.Next(Poblacion.Count);
+                } while (IndivA == IndivB);
 
-			//Crea la población de individuos
-			CreaPobl(Azar, TamanoPoblacion, Busca);
+                //Evalúa cada individuo seleccionado
+                Poblacion[IndivA].Evalua(CadenaBusca);
+                Poblacion[IndivB].Evalua(CadenaBusca);
 
-			for (int itera = 1; itera <= TotalCiclos; itera++) {
+                //Genera el hijo
+                Individuo Hijo = new();
+                int Pos = Azar.Next(CadenaBusca.Length);
+                Hijo.Cadena.Append(Poblacion[IndivA].Cadena.ToString(0, Pos));
+                Hijo.Cadena.Append(Poblacion[IndivB].Cadena.ToString(Pos, CadenaBusca.Length - Pos));
+                Hijo.Muta(Azar);
 
-				//Selecciona dos individuos distintos al azar
-				int IndivA = Azar.Next(Pobl.Count);
-				int IndivB;
-				do {
-					IndivB = Azar.Next(Pobl.Count);
-				} while (IndivA == IndivB);
+                //Si el hijo es mejor que los progenitores, los reemplaza
+                Hijo.Evalua(CadenaBusca);
+                if (Hijo.Puntos > Poblacion[IndivA].Puntos) Poblacion[IndivA].Cadena = new(Hijo.Cadena.ToString());
+                if (Hijo.Puntos > Poblacion[IndivB].Puntos) Poblacion[IndivB].Cadena = new(Hijo.Cadena.ToString());
 
-				//Crea el hijo cruzando porciones de cadena de ambos padres
-				//y luego muta ese hijo
-				Individuo Hijo = new();
-				Hijo.Cruce(Azar, Pobl[IndivA].Cadena, Pobl[IndivB].Cadena);
-				Hijo.Muta(Azar, Letras);
-				Hijo.Evalua(Busca);
+                // Muestra resultados parciales
+                if (Cont % 2000 == 0) {
+                    List<Individuo> Temp;
+                    Temp = Poblacion.OrderByDescending(obj => obj.Puntos).ToList();
+                    Console.Write("Individuo: " + Temp[0].Cadena);
+                    Console.WriteLine(" Puntos: " + Temp[0].Puntos);
+                }
+            }
 
-				//Si el hijo es mejor que el primer padre, lo reemplaza
-				if (Hijo.Puntos > Pobl[IndivA].Puntos) {
-					Pobl[IndivA].Cadena = Hijo.Cadena;
-					Pobl[IndivA].Puntos = Hijo.Puntos;
-				}
-
-				//Si el hijo es mejor que el segundo padre, lo reemplaza
-				if (Hijo.Puntos > Pobl[IndivB].Puntos) {
-					Pobl[IndivB].Cadena = Hijo.Cadena;
-					Pobl[IndivB].Puntos = Hijo.Puntos;
-				}
-
-				// Muestra resultados parciales
-				if (itera % 4000 == 0) {
-					List<Individuo> Temp;
-					Temp = Pobl.OrderByDescending(obj => obj.Puntos).ToList();
-					Console.Write("Individuo: " + Temp[0].Cadena);
-					Console.WriteLine(" Puntos: " + Temp[0].Puntos);
-				}
-			}
-
-			//Muestra el mejor individuo con el mejor puntaje
-			Console.WriteLine("\r\n\r\nFinaliza");
-			Pobl = Pobl.OrderByDescending(obj => obj.Puntos).ToList();
-			Console.WriteLine("Individuo: " + Pobl[0].Cadena);
-			Console.WriteLine("Puntos: " + Pobl[0].Puntos);
-		}
-
-		// Crea la población 
-		static void CreaPobl(Random Azar, int TotalIndiv, string Busca) {
-			//Genera la población
-			Pobl.Clear();
-			for (int Cont = 1; Cont <= TotalIndiv; Cont++) {
-				Individuo obj = new() {
-					Cadena = CadAzar(Azar, Busca.Length)
-				};
-				obj.Evalua(Busca);
-				Pobl.Add(obj);
-			}
-		}
-
-		// Devuelve una cadena al azar
-		static string CadAzar(Random Azar, int Tamano) {
-			string Cadena = string.Empty;
-			for (int Cont = 1; Cont <= Tamano; Cont++)
-				Cadena += Letras[Azar.Next(Letras.Length)].ToString();
-			return Cadena;
-		}
-	}
+            //Muestra el mejor individuo con el mejor puntaje
+            Console.WriteLine("\r\n\r\nFinaliza");
+            Poblacion = Poblacion.OrderByDescending(obj => obj.Puntos).ToList();
+            Console.Write("Individuo: " + Poblacion[0].Cadena);
+            Console.WriteLine(" Puntos: " + Poblacion[0].Puntos);
+        }
+    }
 }

@@ -1,146 +1,343 @@
+﻿using System.Diagnostics;
+
+/* Algoritmo evolutivo para simplificar ecuaciones
+ * Autor: Rafael Alberto Moreno Parra
+ * 
+ * Problema:
+ * Dada una ecuación compleja del tipo
+ * Y = a*seno(b*X+c) + ... + p*seno(q*X+r) + ...
+ * Con múltiples sumandos
+ * 
+ * donde X es la variable independiente y
+ * Y la variable dependiente, hallar una función
+ * que simplifique la ecuación anterior.
+ * 
+ * Solución:
+ * Usar un algoritmo evolutivo para dar con esa
+ * función que se acerque al comportamiento de la 
+ * función compleja. 
+ * ¿Cómo?
+ * La ecuación compleja genera una serie de datos, luego
+ * se busca la ecuación simple que se acerque a esa serie
+ * de datos.
+ * */
+
 namespace Ejemplo {
-	internal class Program {
-		static void Main() {
-			//Buscar el mayor valor de una ecuación
-			//modificando números de tipo double
-			Poblacion pobl = new();
 
-			int NumIndiv = 100;
-			int Ciclos = 90000;
-			double ValorMinimo = -10;
-			double ValorMaximo = 10;
-			pobl.Proceso(NumIndiv, Ciclos, ValorMinimo, ValorMaximo);
-		}
-	}
+    class Program {
+        static void Main() {
+            Random Azar = new(); //Generador de números aleatorios único
 
-	//Cómo es el individuo
-	internal class Individuo {
-		public double valA, valB, valC, valD, valE;
+            //==================================
+            //Configuración básica del simulador
+            //==================================
 
-		//Al nacer, tendrá un valor double entre 0 y 1
-		public Individuo(Random Azar, double ValMin, double ValMax) {
-			valA = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-			valB = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-			valC = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-			valD = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-			valE = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-		}
+            //Cuántos individuos tendrá la población
+            int NumIndiv = 200;
 
-		//Cambia el valor de una variable
-		public void Muta(Random Azar, double ValMin, double ValMax) {
-			switch (Azar.Next(5)) {
-				case 0:
-					valA = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-					break;
+            //Cuántos milisegundos dará al
+            //algoritmo evolutivo para operar
+            long Tiempo = 30000;
 
-				case 1:
-					valB = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-					break;
+            //Cuántos datos generará la ecuación compleja
+            int TotalDatos = 100;
 
-				case 2:
-					valC = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-					break;
+            //Valor mínimo de la variable X
+            //para el conjunto de datos
+            double Xmin = -720;
 
-				case 3: 
-					valD = Azar.NextDouble() * (ValMax - ValMin) + ValMin; 
-					break;
+            //Valor máximo de la variable X
+            //para el conjunto de datos
+            double Xmax = 720;
 
-				case 4:
-					valE = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
-					break;
-			}
-		}
-	}
+            //====================================
+            //Configuración avanzada del simulador
+            //====================================
 
-	//La población
-	internal class Poblacion {
-		public List<Individuo> objInd = [];
-		private Random Azar = new();
+            //Y = a*seno(b*x+c) + d*seno(e*x+f) + ... +  
+            //Cada a*seno(b*x+c) se le conoce como bloque
 
-		public void Proceso(int NumIndiv, int Ciclos, 
-							double Minimo, double Maximo) {
-			//Genera la población
-			objInd.Clear();
-			for (int Contador = 1; Contador <= NumIndiv; Contador++)
-				objInd.Add(new Individuo(Azar, Minimo, Maximo));
+            //Número de bloques de la ecuación que genera el dataset
+            int BloquesDataset = 30;
 
-			//El proceso evolutivo
-			for (int Contador = 1; Contador <= Ciclos; Contador++) {
-				//Seleccionar al azar dos individuos de esa población: A y B
-				int PosA = Azar.Next(objInd.Count);
-				int PosB;
-				do {
-					PosB = Azar.Next(objInd.Count);
-				} while (PosB == PosA);
+            //Número de bloques de la ecuación del individuo
+            int BloqueIndiv = 6;
 
-				//Evaluar adaptación de A
-				double PuntajeA = Ecuacion(objInd[PosA].valA, objInd[PosA].valB,
-											objInd[PosA].valC, objInd[PosA].valD,
-											objInd[PosA].valE);
+            //Valor mínimo que tendrán los coeficientes
+            double CfMin = -3;
 
-				//Evaluar adaptación de B
-				double PuntajeB = Ecuacion(objInd[PosB].valA, objInd[PosB].valB,
-											objInd[PosB].valC, objInd[PosB].valD,
-											objInd[PosB].valE);
+            //Valor máximo que tendrán los coeficientes
+            double CfMax = 3;
 
-				//Si adaptación de A es mejor que adaptación de B entonces
-				if (PuntajeA > PuntajeB) {
-					//Eliminar individuo B y duplicar individuo A
-					objInd[PosB].valA = objInd[PosA].valA;
-					objInd[PosB].valB = objInd[PosA].valB;
-					objInd[PosB].valC = objInd[PosA].valC;
-					objInd[PosB].valD = objInd[PosA].valD;
-					objInd[PosB].valE = objInd[PosA].valE;
+            //=================================
+            //Imprime los datos de la simulación
+            //=================================
+            Console.WriteLine("Algoritmo Evolutivo\r\n");
+            Console.WriteLine("Individuos por población: " + NumIndiv);
+            Console.WriteLine("Milisegundos: " + Tiempo);
+            Console.WriteLine("Datos generados: " + TotalDatos);
+            Console.WriteLine("Rango de datos en X entre: " + Xmin + " y " + Xmax);
+            Console.WriteLine("Ecuación compleja. Bloques: " + BloquesDataset);
+            Console.WriteLine("Ecuación simple. Bloques: " + BloqueIndiv);
+            Console.Write("Coeficientes entre: " + CfMin);
+            Console.WriteLine(" y " + CfMax);
 
-					//Modificar levemente al azar el nuevo duplicado
-					objInd[PosB].Muta(Azar, Minimo, Maximo);
-				}
-				else {
-					//Eliminar individuo A y duplicar individuo B
-					objInd[PosA].valA = objInd[PosB].valA;
-					objInd[PosA].valB = objInd[PosB].valB;
-					objInd[PosA].valC = objInd[PosB].valC;
-					objInd[PosA].valD = objInd[PosB].valD;
-					objInd[PosA].valE = objInd[PosB].valE;
+            //Prepara el generador de datos
+            GeneraEcuacion Genera = new();
 
-					//Modificar levemente al azar el nuevo duplicado
-					objInd[PosA].Muta(Azar, Minimo, Maximo);
-				}
-			}
+            //Crea un dataset de valores X, Y
+            Genera.GeneraDatos(Azar, BloquesDataset, CfMin, CfMax,
+                                Xmin, Xmax, TotalDatos);
 
-			//Buscar individuo con mejor adaptación de la población
-			double MejorPuntaje = double.MinValue;
-			int Mejor = 0;
-			for (int indiv = 0; indiv < objInd.Count; indiv++) {
-				double Puntaje = Ecuacion(objInd[indiv].valA, objInd[indiv].valB,
-											objInd[indiv].valC, objInd[indiv].valD,
-											objInd[indiv].valE); ;
-				if (Puntaje > MejorPuntaje) {
-					MejorPuntaje = Puntaje;
-					Mejor = indiv;
-				}
-			}
+            //Configura la población que se adaptará al dataset
+            Evolutivo poblacion = new(Azar, NumIndiv, BloqueIndiv, CfMin, CfMax);
 
-			//Imprime el mejor individuo
-			Console.Write("Búsqueda del mayor valor Y");
-			Console.WriteLine(" de una ecuación de múltiples variables");
-			Console.Write("Entre Mínimo = " + Minimo);
-			Console.WriteLine(" y Máximo = " + Maximo);
-			Console.WriteLine("Variable A: " + objInd[Mejor].valA);
-			Console.WriteLine("Variable B: " + objInd[Mejor].valB);
-			Console.WriteLine("Variable C: " + objInd[Mejor].valC);
-			Console.WriteLine("Variable D: " + objInd[Mejor].valD);
-			Console.WriteLine("Variable E: " + objInd[Mejor].valE);
-			Console.WriteLine("Valor Y: " + MejorPuntaje);
-		}
+            //Proceso de buscar el mejor individuo al dataset generado
+            poblacion.Proceso(Azar, Genera.Xentrada,
+                                Genera.Yesperado, Tiempo);
+        }
+    }
 
-		public double Ecuacion(double a, double b, double c,
-								double d, double e) {
-			return 0.3 * Math.Sin(a * c - d) +
-					1.7 * Math.Sin(e * b + c) +
-					2.8 * Math.Cos(3.1 * b - 4.4 * a) -
-					3.1 * Math.Sin(a * d - e * c) +
-					0.7 * Math.Cos(a + b * c - d);
-		}
-	}
+    //Crea una ecuación compleja al azar
+    public class GeneraEcuacion {
+        //Coeficientes de la ecuación que representa a los datos del dataset
+        //Y = a*seno(b*x+c) + d*seno(e*x+f) + ... +  
+        //Cada a*seno(b*x+c) se le conoce como bloque
+        List<double>? Cf;
+
+        //Valores X de entrada
+        public List<double> Xentrada = [];
+
+        //Valores Y generados por la ecuación
+        public List<double> Yesperado = [];
+
+        //Genera los datos del dataset
+        public void GeneraDatos(Random Azar, int NumBloques,
+                                double CfMin, double CfMax,
+                                double Xmin, double Xmax, int TotalDatos) {
+            //Coeficientes al azar
+            Cf = [];
+            for (int Cont = 1; Cont <= NumBloques * 3; Cont++)
+                Cf.Add(Azar.NextDouble() * (CfMax - CfMin) + CfMin);
+
+            Xentrada.Clear();
+            Yesperado.Clear();
+
+            //Valores de X que tendrá.
+            for (int Cont = 1; Cont <= TotalDatos; Cont++)
+                Xentrada.Add(Azar.NextDouble() * (Xmax - Xmin) + Xmin);
+            Xentrada.Sort();
+
+            //Genera el dataset con esta ecuación compleja
+            for (int Xval = 0; Xval < Xentrada.Count; Xval++) {
+                double Y = 0;
+                for (int Cont = 0; Cont < Cf.Count; Cont += 3) {
+                    double Valor = Cf[Cont + 1] * Xentrada[Xval] + Cf[Cont + 2];
+                    Y += Cf[Cont] * Math.Sin(Valor * Math.PI / 180);
+                }
+                Yesperado.Add(Y);
+            }
+        }
+    }
+
+    internal class Evolutivo {
+        //Almacena los individuos de la población
+        List<Individuo> Poblacion = [];
+
+        //Inicializa la población con los individuos
+        public Evolutivo(Random Azar, int numIndividuos,
+                            int BloqInd,
+                            double CfMin, double CfMax) {
+            Poblacion.Clear();
+            for (int cont = 1; cont <= numIndividuos; cont++)
+                Poblacion.Add(new Individuo(Azar, BloqInd, CfMin, CfMax));
+        }
+
+        //Proceso evolutivo.
+        public void Proceso(Random Azar, List<double> Xentra,
+                            List<double> Yespera, long Tiempo) {
+
+            //Medidor de tiempos
+            Stopwatch cronometro = new();
+            cronometro.Reset();
+            cronometro.Start();
+
+            //Tiempo que repetirá el proceso evolutivo
+            while (cronometro.ElapsedMilliseconds < Tiempo) {
+
+                //Escoge dos individuos al azar
+                int indivA = Azar.Next(Poblacion.Count);
+                int indivB;
+                do {
+                    indivB = Azar.Next(Poblacion.Count);
+                } while (indivB == indivA);
+
+                //Evalúa cada individuo con respecto a las
+                //entradas y salidas esperadas
+                Poblacion[indivA].AjusteIndiv(Xentra, Yespera);
+                Poblacion[indivB].AjusteIndiv(Xentra, Yespera);
+
+                //El mejor individuo genera una copia
+                //que sobreescribe al peor y la copia se muta
+                if (Poblacion[indivA].Ajuste < Poblacion[indivB].Ajuste)
+                    CopiaMuta(Azar, indivA, indivB);
+                else
+                    CopiaMuta(Azar, indivB, indivA);
+            }
+
+            //Imprime el mejor individuo
+            int MejorIndividuo = -1;
+            double MejorAjuste = double.MaxValue;
+            for (int cont = 0; cont < Poblacion.Count; cont++) {
+
+                if (Poblacion[cont].Ajuste != -1 &&
+                    Poblacion[cont].Ajuste < MejorAjuste) {
+                    MejorAjuste = Poblacion[cont].Ajuste;
+                    MejorIndividuo = cont;
+                }
+
+            }
+
+            Poblacion[MejorIndividuo].Muestra(Xentra, Yespera);
+        }
+
+        public void CopiaMuta(Random Azar, int Origen, int Destino) {
+            Individuo ganador, perdedor;
+            ganador = Poblacion[Origen];
+            perdedor = Poblacion[Destino];
+
+            //Copia el individuo
+            for (int Cont = 0; Cont < ganador.Coef.Count; Cont++)
+                perdedor.Coef[Cont] = ganador.Coef[Cont];
+
+            //Muta la copia
+            perdedor.Muta(Azar);
+        }
+    }
+
+    internal class Individuo {
+        //Coeficientes de la ecuación que representa al individuo
+        //Y = a*seno(b*x+c) + d*seno(e*x+f) + ... +  
+        //Cada a*seno(b*x+c) se le conoce como bloque
+        public List<double>? Coef;
+
+        //Guarda en "caché" el ajuste para no tener
+        //que calcularlo continuamente
+        public double Ajuste;
+
+        //Inicializa el individuo con las Piezas,
+        //Modificadores y Operadores al azar
+        public Individuo(Random Azar, int BloqInd,
+                         double CfMin, double CfMax) {
+            //Coeficientes al azar
+            Coef = [];
+            for (int Cont = 1; Cont <= BloqInd * 3; Cont++)
+                Coef.Add(Azar.NextDouble() * (CfMax - CfMin) + CfMin);
+            Ajuste = -1;
+        }
+
+        //Calcula el ajuste del individuo con los valores de salida esperados
+        public void AjusteIndiv(List<double> Entradas, List<double> Yesperado) {
+            //Si ya había sido calculado entonces
+            //evita calcularlo de nuevo
+            if (Ajuste != -1) return;
+
+            //Deduce el ajuste
+            Ajuste = 0;
+            for (int Xval = 0; Xval < Entradas.Count; Xval++) {
+                double Y = 0;
+                for (int Cont = 0; Cont < Coef.Count; Cont += 3) {
+                    double Valor = Coef[Cont + 1] * Entradas[Xval] + Coef[Cont + 2];
+                    Y += Coef[Cont] * Math.Sin(Valor * Math.PI / 180);
+                }
+
+                //Diferencia entre la salida calculada y la esperada
+                Ajuste += Math.Abs(Y - Yesperado[Xval]);
+            }
+        }
+
+        //Muta alguna parte del individuo
+        public void Muta(Random Azar) {
+            int CualMuta = Azar.Next(Coef.Count);
+            Coef[CualMuta] += Azar.NextDouble() * 2 - 1;
+            Ajuste = -1;
+        }
+
+        //Imprime el individuo frente a los datos esperados
+        public void Imprime(List<double> Entradas, List<double> Yesperado) {
+            Console.WriteLine("\r\n\r\nIndividuo");
+            Console.WriteLine("Ajuste: " + Ajuste);
+            for (int Cont = 0; Cont < Coef.Count; Cont++)
+                Console.WriteLine("Coef: " + Coef[Cont]);
+
+            Console.WriteLine("\r\nEntrada;Salida Esperada;Salida Calculada");
+            for (int Xval = 0; Xval < Entradas.Count; Xval++) {
+                double Y = 0;
+                for (int Cont = 0; Cont < Coef.Count; Cont += 3) {
+                    double Valor = Coef[Cont + 1] * Entradas[Xval] + Coef[Cont + 2];
+                    Y += Coef[Cont] * Math.Sin(Valor * Math.PI / 180);
+                }
+                Console.Write(Entradas[Xval] + ";" + Yesperado[Xval]);
+                Console.WriteLine(";" + Y);
+            }
+        }
+
+        //Imprime el individuo con los datos normalizados
+        public void Muestra(List<double> Entradas,
+                            List<double> Yesperado) {
+
+            Console.WriteLine("\r\n\r\nIndividuo. Normalizado.");
+
+            double Xmin = double.MaxValue;
+            double Ymin = double.MaxValue;
+            double Xmax = double.MinValue;
+            double Ymax = double.MinValue;
+
+            //Máximos y mínimos del dataset
+            for (int Xval = 0; Xval < Entradas.Count; Xval++) {
+
+                if (Entradas[Xval] < Xmin)
+                    Xmin = Entradas[Xval];
+
+                if (Entradas[Xval] > Xmax)
+                    Xmax = Entradas[Xval];
+
+                if (Yesperado[Xval] < Ymin)
+                    Ymin = Yesperado[Xval];
+
+                if (Yesperado[Xval] > Ymax)
+                    Ymax = Yesperado[Xval];
+            }
+
+            //Salidas del individuo
+            List<double> IndivSale = [];
+            for (int Xval = 0; Xval < Entradas.Count; Xval++) {
+                double Y = 0;
+                for (int Cont = 0; Cont < Coef.Count; Cont += 3) {
+                    double Valor = Coef[Cont + 1] * Entradas[Xval] + Coef[Cont + 2];
+                    Y += Coef[Cont] * Math.Sin(Valor * Math.PI / 180);
+                }
+                IndivSale.Add(Y);
+                if (Y < Ymin) Ymin = Y;
+                if (Y > Ymax) Ymax = Y;
+            }
+
+            //Normaliza
+            double AjusteNorm = 0;
+            for (int Xval = 0; Xval < Entradas.Count; Xval++) {
+                Entradas[Xval] = (Entradas[Xval] - Xmin) / (Xmax - Xmin);
+                Yesperado[Xval] = (Yesperado[Xval] - Ymin) / (Ymax - Ymin);
+                IndivSale[Xval] = (IndivSale[Xval] - Ymin) / (Ymax - Ymin);
+                AjusteNorm += Math.Abs(Yesperado[Xval] - IndivSale[Xval]);
+            }
+
+            //Imprime
+            Console.WriteLine("Ajuste: " + AjusteNorm);
+            Console.WriteLine("\r\nEntrada;Salida Esperada;Salida Calculada");
+            for (int Xval = 0; Xval < Entradas.Count; Xval++) {
+                Console.Write(Entradas[Xval] + ";" + Yesperado[Xval]);
+                Console.WriteLine(";" + IndivSale[Xval]);
+            }
+        }
+    }
 }

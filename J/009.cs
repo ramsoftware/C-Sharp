@@ -1,127 +1,146 @@
 namespace Ejemplo {
-	internal class Program {
-		static void Main() {
-			//Buscar el mayor valor de una ecuación.
-			//Operador cruce y mutación
-			Poblacion pobl = new();
+    internal class Program {
+        static void Main() {
+            //Buscar el mayor valor de una ecuación
+            //modificando números de tipo double
+            Evolutivo objEvl = new();
 
-			int NumInd = 1000;
-			int Ciclos = 90000;
-			int Bits = 20;
-			double Xmin = -4;
-			double Xmax = 1;
-			pobl.Proceso(NumInd, Bits, Ciclos, Xmin, Xmax);
-		}
-	}
+            int TamanoPoblacion = 200;
+            int Ciclos = 200000;
+            double ValorMinimo = -10;
+            double ValorMaximo = 10;
+            objEvl.Proceso(TamanoPoblacion, Ciclos, ValorMinimo, ValorMaximo);
+        }
+    }
 
-	//Cómo es el individuo
-	internal class Individuo {
-		public int Genotipo;
+    //Cómo es el individuo
+    internal class Individuo {
+        public double valA, valB, valC, valD, valE;
 
-		//Al nacer, tendrá un valor dependiendo del número de bits
-		public Individuo(Random Azar, int NumeroBits) {
-			Genotipo = Azar.Next((int)Math.Pow(2, NumeroBits));
-		}
+        //Al nacer, tendrá un valor double entre ValMin y ValMax
+        public Individuo(Random Azar, double ValMin, double ValMax) {
+            valA = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+            valB = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+            valC = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+            valD = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+            valE = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+        }
 
-		//Operador cruce.
-		public Individuo(Random Azar, int GeneticoA, int GeneticoB) {
-			//En que posicion corta el genotipo de cada padre
-			int Posicion = Azar.Next(sizeof(int) * 8);
+        //Cambia el valor de una variable
+        public void Muta(Random Azar, double ValMin, double ValMax) {
+            switch (Azar.Next(5)) {
+                case 0:
+                    valA = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+                    break;
 
-			//Extrae las partes de cada progenitor
-			int Mascara = (1 << Posicion) - 1;
-			int ParteA = GeneticoA >> Posicion;
-			int ParteB = GeneticoB & Mascara;
+                case 1:
+                    valB = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+                    break;
 
-			//Une las partes las inicial de A y la final de B
-			Genotipo = (ParteA << Posicion) | ParteB;
-		}
+                case 2:
+                    valC = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+                    break;
 
-		//Mutación: Cambia el valor en algun bit
-		public void Muta(Random Azar, int NumeroBits) {
-			int Mascara = 1 << Azar.Next(NumeroBits);
-			Genotipo ^= Mascara;
-		}
-	}
+                case 3:
+                    valD = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+                    break;
 
-	//La población
-	internal class Poblacion {
-		public List<Individuo> objInd = [];
-		private Random Azar = new();
+                case 4:
+                    valE = Azar.NextDouble() * (ValMax - ValMin) + ValMin;
+                    break;
+            }
+        }
+    }
 
-		public void Proceso(int NumInd, int Bits, int Ciclos,
-							double Xmin, double Xmax) {
-			//Genera la población
-			objInd.Clear();
-			for (int Contador = 1; Contador <= NumInd; Contador++)
-				objInd.Add(new Individuo(Azar, Bits));
+    //La población
+    internal class Evolutivo {
+        public List<Individuo> Poblacion = [];
+        private Random Azar = new();
 
-			//El factor de conversión
-			double Divide = Math.Pow(2, Bits) - 1;
-			double Factor = (Xmax - Xmin) / Divide;
+        public void Proceso(int TamanoPoblacion, int Ciclos,
+                            double Minimo, double Maximo) {
+            //Genera la población
+            Poblacion.Clear();
+            for (int Cont = 1; Cont <= TamanoPoblacion; Cont++)
+                Poblacion.Add(new Individuo(Azar, Minimo, Maximo));
 
-			//El proceso evolutivo
-			for (int Contador = 1; Contador <= Ciclos; Contador++) {
+            //El proceso evolutivo
+            for (int Cont = 1; Cont <= Ciclos; Cont++) {
+                //Seleccionar al azar dos individuos de esa población: A y B
+                int PosA = Azar.Next(Poblacion.Count);
+                int PosB;
+                do {
+                    PosB = Azar.Next(Poblacion.Count);
+                } while (PosB == PosA);
 
-				//Seleccionar al azar dos individuos de esa población: A y B
-				int PosA = Azar.Next(objInd.Count);
-				int PosB;
-				do {
-					PosB = Azar.Next(objInd.Count);
-				} while (PosB == PosA);
+                //Evaluar adaptación de A
+                double PuntajeA = Ecuacion(Poblacion[PosA].valA, Poblacion[PosA].valB,
+                                            Poblacion[PosA].valC, Poblacion[PosA].valD,
+                                            Poblacion[PosA].valE);
 
-				//Generan un hijo que nace del cruce
-				Individuo Hijo = new(Azar, objInd[PosA].Genotipo,
-										   objInd[PosB].Genotipo);
+                //Evaluar adaptación de B
+                double PuntajeB = Ecuacion(Poblacion[PosB].valA, Poblacion[PosB].valB,
+                                            Poblacion[PosB].valC, Poblacion[PosB].valD,
+                                            Poblacion[PosB].valE);
 
-				//Además muta al Hijo
-				Hijo.Muta(Azar, Bits);
+                //Si adaptación de A es mejor que adaptación de B entonces
+                if (PuntajeA > PuntajeB) {
+                    //Eliminar individuo B y duplicar individuo A
+                    Poblacion[PosB].valA = Poblacion[PosA].valA;
+                    Poblacion[PosB].valB = Poblacion[PosA].valB;
+                    Poblacion[PosB].valC = Poblacion[PosA].valC;
+                    Poblacion[PosB].valD = Poblacion[PosA].valD;
+                    Poblacion[PosB].valE = Poblacion[PosA].valE;
 
-				double Xa = Xmin + objInd[PosA].Genotipo * Factor;
-				double Pa = Ecuacion(Xa); //Evaluar adaptación de A
+                    //Modificar levemente al azar el nuevo duplicado
+                    Poblacion[PosB].Muta(Azar, Minimo, Maximo);
+                }
+                else {
+                    //Eliminar individuo A y duplicar individuo B
+                    Poblacion[PosA].valA = Poblacion[PosB].valA;
+                    Poblacion[PosA].valB = Poblacion[PosB].valB;
+                    Poblacion[PosA].valC = Poblacion[PosB].valC;
+                    Poblacion[PosA].valD = Poblacion[PosB].valD;
+                    Poblacion[PosA].valE = Poblacion[PosB].valE;
 
-				double Xb = Xmin + objInd[PosB].Genotipo * Factor;
-				double Pb = Ecuacion(Xb); //Evaluar adaptación de B
+                    //Modificar levemente al azar el nuevo duplicado
+                    Poblacion[PosA].Muta(Azar, Minimo, Maximo);
+                }
+            }
 
-				double Xh = Xmin + Hijo.Genotipo * Factor;
-				double Ph = Ecuacion(Xh); //Evaluar adaptación de Hijo
+            //Buscar individuo con mejor adaptación de la población
+            double MejorPuntaje = double.MinValue;
+            int Mejor = 0;
+            for (int indiv = 0; indiv < Poblacion.Count; indiv++) {
+                double Puntaje = Ecuacion(Poblacion[indiv].valA, Poblacion[indiv].valB,
+                                            Poblacion[indiv].valC, Poblacion[indiv].valD,
+                                            Poblacion[indiv].valE); ;
+                if (Puntaje > MejorPuntaje) {
+                    MejorPuntaje = Puntaje;
+                    Mejor = indiv;
+                }
+            }
 
-				if (Ph > Pa) 
-					objInd[PosA].Genotipo = Hijo.Genotipo;
+            //Imprime el mejor individuo
+            Console.Write("Búsqueda del mayor valor Y");
+            Console.WriteLine(" de una ecuación de múltiples variables");
+            Console.Write("Entre Mínimo = " + Minimo);
+            Console.WriteLine(" y Máximo = " + Maximo);
+            Console.WriteLine("Variable A: " + Poblacion[Mejor].valA);
+            Console.WriteLine("Variable B: " + Poblacion[Mejor].valB);
+            Console.WriteLine("Variable C: " + Poblacion[Mejor].valC);
+            Console.WriteLine("Variable D: " + Poblacion[Mejor].valD);
+            Console.WriteLine("Variable E: " + Poblacion[Mejor].valE);
+            Console.WriteLine("Valor Y: " + MejorPuntaje);
+        }
 
-				if (Ph > Pb) 
-					objInd[PosB].Genotipo = Hijo.Genotipo;
-			}
-
-			//Buscar individuo con mejor adaptación de la población
-			double MejorPuntaje = double.MinValue;
-			int MejorIndivid = 0;
-			for (int indiv = 0; indiv < objInd.Count; indiv++) {
-				double ValorX = Xmin + objInd[indiv].Genotipo * Factor;
-				double Puntaje = Ecuacion(ValorX);
-				if (Puntaje > MejorPuntaje) {
-					MejorPuntaje = Puntaje;
-					MejorIndivid = indiv;
-				}
-			}
-
-			//Imprime el mejor individuo
-			double MejorValorX = Xmin + objInd[MejorIndivid].Genotipo * Factor;
-
-			Console.Write("Búsqueda del mayor valor Y");
-			Console.WriteLine(". Operador cruce y mutación.");
-			Console.WriteLine("Entre Xmin = " + Xmin + " y Xmax = " + Xmax);
-			Console.WriteLine("Número de bits: " + Bits);
-			Console.WriteLine("Valor X: " + MejorValorX);
-			Console.WriteLine("Valor Y: " + Ecuacion(MejorValorX));
-		}
-
-		public double Ecuacion(double x) {
-			double y = 0.1 * Math.Pow(x, 6) + 0.6 * Math.Pow(x, 5);
-			y += (-0.9 * Math.Pow(x, 4)) - 6.2 * Math.Pow(x, 3);
-			y += 2 * x * x + 5 * x - 1;
-			return y;
-		}
-	}
+        public double Ecuacion(double a, double b, double c,
+                                double d, double e) {
+            return 0.3 * Math.Sin(a * c - d) +
+                    1.7 * Math.Sin(e * b + c) +
+                    2.8 * Math.Cos(3.1 * b - 4.4 * a) -
+                    3.1 * Math.Sin(a * d - e * c) +
+                    0.7 * Math.Cos(a + b * c - d);
+        }
+    }
 }
-
