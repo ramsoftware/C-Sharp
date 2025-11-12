@@ -48,8 +48,8 @@
 			arbolN.Hijos[0].AgregaHijo(new("Bjjj", 'j', 9, 0.9));
 
 			//Agrega varios hijos al nodo "EEEE"
-			arbolN.Hijos[4].AgregaHijo(new("Ekkk", 'k', 10, 1.1));
-			arbolN.Hijos[4].AgregaHijo(new("Elll", 'l', 11, 1.2));
+			arbolN.Hijos[3].AgregaHijo(new("Ekkk", 'k', 10, 1.1));
+			arbolN.Hijos[3].AgregaHijo(new("Elll", 'l', 11, 1.2));
 
 			//Imprime el árbol
 			arbolN.Imprime();
