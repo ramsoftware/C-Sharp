@@ -1,4 +1,4 @@
-# C-Sharp
+# C-Sharp con .NET 10
 Libros de C#<br>
 Parte 1: IDE, variables, ciclos, si condicional, funciones<br>
 Parte 2: Cadenas (strings)<br>
