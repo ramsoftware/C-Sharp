@@ -1,0 +1,7 @@
+Rectángulo se mueve en forma animada:
+1. Izquierda
+2. Derecha
+3. Arriba
+4. Abajo
+5. Aumentar velocidad
+6. Disminuir velocidad

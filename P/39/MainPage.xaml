@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gfx="clr-namespace:Animacion"
+             x:Class="Animacion.MainPage">
+
+    <Grid RowDefinitions="Auto, Auto, *"
+          Padding="16"
+          RowSpacing="12">
+
+        <!-- Fila 0: botones de dirección -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*, *, *, *"
+              ColumnSpacing="4">
+
+            <Button Text="Izquierda" Clicked="PresionaIzquierda" Grid.Column="0"/>
+            <Button Text="Arriba"    Clicked="PresionaArriba"    Grid.Column="1"/>
+            <Button Text="Abajo"     Clicked="PresionaAbajo"     Grid.Column="2"/>
+            <Button Text="Derecha"   Clicked="PresionaDerecha"   Grid.Column="3"/>
+
+        </Grid>
+
+        <!-- Fila 1: botones de velocidad -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="8">
+
+            <Button Text="+ Velocidad" Clicked="MasVelocidad"    Grid.Column="0"/>
+            <Button Text="- Velocidad" Clicked="MenosVelocidad"  Grid.Column="1"/>
+
+        </Grid>
+
+        <!-- Fila 2: área de dibujo -->
+        <GraphicsView x:Name="CanvasView"
+                      Grid.Row="2"
+                      BackgroundColor="Transparent"
+                      HorizontalOptions="Fill"
+                      VerticalOptions="Fill">
+
+            <GraphicsView.Drawable>
+                <gfx:DibujarFiguras x:Name="Rectangulo"/>
+            </GraphicsView.Drawable>
+
+        </GraphicsView>
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,1 @@
+Rectángulo se mueve en forma animada a la izquierda o a la derecha dependiendo del botón presionado.

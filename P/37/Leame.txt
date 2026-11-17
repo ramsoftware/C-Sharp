@@ -1,0 +1,1 @@
+Giro en el centroide de un rectángulo

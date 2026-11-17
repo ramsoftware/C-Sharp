@@ -1,0 +1,1 @@
+Girar un rectángulo con botones en la GUI

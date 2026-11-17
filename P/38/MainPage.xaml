@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gfx="clr-namespace:Ejemplo"
+             x:Class="Ejemplo.MainPage">
+
+    <Grid RowDefinitions="Auto, *" Padding="16" RowSpacing="12">
+        <!-- Botones arriba -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Button Text="Izquierda"    Clicked="PresionaIzquierda"    Grid.Column="0" />
+            <Button Text="Derecha"  Clicked="PresionaDerecha"  Grid.Column="1" />
+        </Grid>
+
+        <!-- Área de dibujo abajo -->
+        <GraphicsView x:Name="CanvasView"
+                      Grid.Row="1"
+                      BackgroundColor="Transparent"
+                      HorizontalOptions="Fill"
+                      VerticalOptions="Fill">
+            <GraphicsView.Drawable>
+                <!-- Se le da un nombre al Drawable para accederlo desde el código -->
+                <gfx:DibujarFiguras x:Name="Rectangulo" />
+            </GraphicsView.Drawable>
+        </GraphicsView>
+    </Grid>
+</ContentPage>
