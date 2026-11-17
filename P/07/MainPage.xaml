@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            
+            <Label x:Name="lblValorSlider" Text="Control Slider. Valor: 50" />
+            <Slider Minimum="0" Maximum="100" Value="50" ValueChanged="CambiaValorSlider" />
+
+            <Label x:Name="lblValorStepper" Text="Control Stepper. Valor: " />
+            <Stepper Minimum="0" Maximum="10" Increment="1" ValueChanged="CambiaValorStepper" />
+
+            <Label Text="Barra de progreso" />
+            <Stepper Minimum="0" Maximum="1" Increment="0.1" ValueChanged="CambiaValorProgreso" />
+            <ProgressBar x:Name="pgbProgreso" />
+
+            <Label Text="Separador con BoxView" />
+            <BoxView HeightRequest="10" BackgroundColor="#DDD" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

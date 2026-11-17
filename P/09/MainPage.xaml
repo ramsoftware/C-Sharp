@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+
+
+            <!-- Picker: muestra el Nombre, pero el SelectedItem es un objeto Opcion -->
+            <Picker x:Name="OpcionesPicker"
+                Title="Elige una opción"
+                ItemDisplayBinding="{Binding Nombre}" />
+
+            <!-- Botón: al hacer clic, escribe la selección  -->
+            <Button Text="Mostrar selección"
+                Clicked="OnMostrarSeleccionClicked" />
+
+            <!-- Entry: salida del Id y Nombre seleccionados -->
+            <Entry x:Name="Salida"
+               Placeholder="Aquí aparecerá tu selección" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
