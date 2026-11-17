@@ -1,0 +1,2 @@
+Gráfico estadístico simple: Barras
+

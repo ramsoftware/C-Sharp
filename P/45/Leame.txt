@@ -1,0 +1,1 @@
+Archivo plano: Guardar y leer
