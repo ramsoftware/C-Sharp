@@ -1,0 +1,4 @@
+Navegación simple (anterior-siguiente)
+Adicionar color
+Borrar color
+Editar color

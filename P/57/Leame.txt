@@ -1,0 +1,2 @@
+Navegación simple (anterior-siguiente)
+Adicionar color

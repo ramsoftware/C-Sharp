@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15" >
+
+            <Button Text="Anterior" Clicked="BtnAnterior_Clicked"/>
+
+            <CollectionView x:Name="ListaColores">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="10">
+                            <Grid ColumnDefinitions="60,*,80,20,80">
+                                <Label Text="{Binding Codigo}" />
+                                <Label Grid.Column="1" Text="{Binding Nombre}" />
+                                <Button Grid.Column="2" Text="Editar" BackgroundColor="Orange" TextColor="White" Clicked="Editar_Clicked" CommandParameter="{Binding Codigo}" />
+                                <Button Grid.Column="4" Text="Borrar" BackgroundColor="Red" TextColor="White" Clicked="Eliminar_Clicked" CommandParameter="{Binding Codigo}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
+            <Button  Text="Siguiente"  Clicked="BtnSiguiente_Clicked"/>
+            <Button Text="Nuevo Color" BackgroundColor="Green" Clicked="NuevoColor_Clicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

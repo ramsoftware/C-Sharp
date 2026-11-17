@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.AgregarColorPage"
+             Title="AgregarColorPage">
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Label Text="Nombre del color" FontAttributes="Bold" />
+        <Entry x:Name="txtNombre" Placeholder="Digite el nombre" />
+        <Button Text="Guardar" Clicked="Guardar_Clicked" />
+    </VerticalStackLayout>
+</ContentPage>

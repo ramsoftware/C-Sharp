@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20">
+            <CollectionView x:Name="ListaColores">
+                <CollectionView.Header>
+                    <Grid ColumnDefinitions="100,*"
+                  Padding="5"
+                  BackgroundColor="LightGray">
+                        <Label Text="Código"
+                       FontAttributes="Bold"/>
+                        <Label Grid.Column="1"
+                       Text="Nombre"
+                       FontAttributes="Bold"/>
+                    </Grid>
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="100,*"
+                      Padding="5">
+                            <Label Text="{Binding Codigo}" />
+                            <Label Grid.Column="1"
+                           Text="{Binding Nombre}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
