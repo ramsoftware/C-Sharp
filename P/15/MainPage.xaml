@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+
+    <ScrollView>
+        <Grid Padding="16">
+            <!-- El Grid llenará el ancho; la imagen se ajusta con AspectFit -->
+            <Image
+                Source="https://www.anipedia.net/imagenes/gatos-800x375.jpg"
+                Aspect="AspectFit"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start" />
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <VerticalStackLayout Padding="16" Spacing="16">
+
+        <!-- Contenedor de botones -->
+        <Grid ColumnDefinitions="*,*,*"
+              ColumnSpacing="12">
+
+
+            <!-- Desde imagen local en Resources/Images -->
+            <ImageButton Grid.Column="0" Source="uno.jpg"
+                 WidthRequest="48" HeightRequest="48"
+                 BackgroundColor="Transparent"
+                 SemanticProperties.Description="Información"
+                 Clicked="BtnInfo_Clicked" />
+
+            <ImageButton Grid.Column="1" Source="dos.jpg"
+                 WidthRequest="48" HeightRequest="48"
+                 BackgroundColor="Transparent"
+                 SemanticProperties.Description="Advertencia"
+                 Clicked="BtnWarning_Clicked" />
+
+            <!-- Desde URL pública -->
+            <ImageButton Grid.Column="2" Source="tres.jpg"
+                 WidthRequest="48" HeightRequest="48"
+                 BackgroundColor="Transparent"
+                 SemanticProperties.Description="Confirmación"
+                 Clicked="BtnSuccess_Clicked" />
+
+        </Grid>
+        
+            <!-- TextBox donde aparecerá el mensaje -->
+            <Entry x:Name="MensajeEntry"
+               IsReadOnly="True"
+               Placeholder="Aquí verás el mensaje…"
+               FontSize="16" />
+
+
+
+    </VerticalStackLayout>
+    
+</ContentPage>

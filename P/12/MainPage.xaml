@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <ScrollView>
+
+
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <Label Text="Ingresa un número entero:"
+                   FontAttributes="Bold" />
+
+            <Entry x:Name="NumeroEntry"
+                   Placeholder="Ej. 255"
+                   Keyboard="Numeric" />
+
+            <Button Text="Convertir"
+                    Clicked="OnConvertirClicked" />
+
+            <!-- Tabla 3 filas × 2 columnas -->
+            <Grid ColumnDefinitions="Auto,*"
+                  RowDefinitions="Auto,Auto,Auto"
+                  ColumnSpacing="12"
+                  RowSpacing="8"
+                  Padding="0,12,0,0">
+
+                <!-- Fila 1: Octal -->
+                <Border Background="#FFFFFF" Grid.Row="0" Grid.Column="0" />
+                <Border Background="#FFFFFF" Grid.Row="0" Grid.Column="1" />
+                <Label Text="Valor octal"
+                       Grid.Row="0" Grid.Column="0"
+                       FontAttributes="Bold" />
+                <Label x:Name="OctalLabel"
+                       Grid.Row="0" Grid.Column="1"
+                       LineBreakMode="NoWrap" HorizontalTextAlignment="End"/>
+
+                <!-- Fila 2: Hexadecimal -->
+                <Border Background="#F7F9FC" Grid.Row="1" Grid.Column="0" />
+                <Border Background="#F7F9FC" Grid.Row="1" Grid.Column="1" />
+                <Label Text="Valor hexadecimal"
+                       Grid.Row="1" Grid.Column="0"
+                       FontAttributes="Bold" />
+                <Label x:Name="HexLabel"
+                       Grid.Row="1" Grid.Column="1"
+                       LineBreakMode="NoWrap" HorizontalTextAlignment="End"/>
+
+                <!-- Fila 3: Binario -->
+                <Border Background="#FFFFFF" Grid.Row="2" Grid.Column="0" />
+                <Border Background="#FFFFFF" Grid.Row="2" Grid.Column="1" />
+                <Label Text="Valor en binario"
+                       Grid.Row="2" Grid.Column="0"
+                       FontAttributes="Bold" />
+                <Label x:Name="BinLabel"
+                       Grid.Row="2" Grid.Column="1"
+                       LineBreakMode="WordWrap" HorizontalTextAlignment="End"/>
+            </Grid>
+
+            <!-- Mensajes de validación o ayuda -->
+            <Label x:Name="MensajeLabel"
+                   TextColor="Tomato" />
+
+        </VerticalStackLayout>
+
+
+    </ScrollView>
+
+</ContentPage>

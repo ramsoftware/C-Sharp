@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+    <VerticalStackLayout Padding="16" Spacing="12">
+
+        <!-- Uso del switch -->
+        <Label Text="Activar opción" FontAttributes="Bold" />
+        <Switch x:Name="MySwitch" Toggled="MySwitch_Toggled" />
+
+        <!-- Puede usar Label si solo necesita mostrar texto -->
+        <Label x:Name="MensajeLabel" FontSize="16" TextColor="DarkSlateGray" />
+
+        <!-- O un Entry (TextBox) si quiere permitir edición o copiar el mensaje -->
+        <Entry x:Name="MensajeEntry" IsReadOnly="True" />
+
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ejemplo.MainPage">
+
+
+    <VerticalStackLayout Padding="16" Spacing="12">
+
+        <Button Text="Mostrar estudiantes" Clicked="OnCargarClicked" />
+
+        <CollectionView x:Name="VistaEstudiantes"
+                        SelectionMode="Single"
+                        SelectionChanged="CambiaSeleccion">
+
+            <!-- ItemsLayout define la disposición o layout de los elementos de la lista.
+                 En este caso usa LinearItemsLayout, que organiza los ítems en línea, es decir, uno tras otro. -->
+            <CollectionView.ItemsLayout>
+
+                <!-- Le dice al CollectionView que coloque los elementos:
+                        en una lista lineal,
+                        sin rejilla (no tipo “grid”),
+                        sin distribución especial.
+                     Es el layout típico de lista. 
+                     Orientation="Vertical" Indica que los elementos se organizan verticalmente, uno debajo del otro.
+                -->
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+
+            <!-- El bloque define cómo se dibuja cada elemento de un CollectionView usando un ItemTemplate.
+                 Es decir, determina la plantilla visual para cada elemento de la lista. -->
+
+
+            <!-- Define la plantilla que se aplicará a cada elemento de la colección (la que se haya enlazado a ItemsSource).
+                 Cada elemento del ItemsSource será renderizado usando este DataTemplate. -->
+            <CollectionView.ItemTemplate>
+
+                <!-- Es el contenedor de la UI para un ítem individual.
+                     El BindingContext dentro del DataTemplate es cada objeto de la colección
+                     (por ejemplo, un objeto Estudiante con propiedades Id, Nombre, Programa).-->
+                <DataTemplate>
+
+                    <!-- Padding="12": agrega espacio interno alrededor del contenido.
+                         ColumnDefinitions="Auto,*": define dos columnas:
+                         Auto: se ajusta al ancho del contenido (ideal para el Id).
+                         *: ocupa el resto del espacio disponible (ideal para el bloque de nombre y programa).
+                         BackgroundColor="#F7F9FC": color de fondo ligeramente gris-azulado.-->
+                    <Grid Padding="12" ColumnDefinitions="Auto,*" BackgroundColor="#F7F9FC">
+
+                        <!-- (columna 0 por defecto)
+                             Text="{Binding Id}": muestra el Id del objeto.
+                             FontAttributes="Bold": lo pone en negrita para destacarlo.
+                             Margin="0,0,12,0": deja un espacio a la derecha (12) para separar del bloque siguiente.-->
+                        <Label Text="{Binding Id}" 
+                               FontAttributes="Bold"
+                               Margin="0,0,12,0" />
+
+                        <!-- Grid.Column="1": lo coloca en la segunda columna.
+                             Spacing="2": separa los labels verticalmente por 2 unidades.
+                             Contiene:
+                                Label Nombre en negrita (resalta el nombre).
+                                Label Programa con tamaño de fuente 12 y color gris #666 (información secundaria).-->
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{Binding Nombre}" FontAttributes="Bold" />
+                            <Label Text="{Binding Programa}" FontSize="12" TextColor="#666" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <!-- Vista vacía -->
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="24" Spacing="6" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="Sin datos disponibles" FontAttributes="Bold" />
+                    <Label Text="Pulsa 'Cargar datos' para obtener la lista." FontSize="12" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <Editor x:Name="ResultadoEditor"
+                HeightRequest="100"
+                Placeholder="Aquí verás el estudiante seleccionado"
+                AutoSize="TextChanges" />
+
+    </VerticalStackLayout>
+
+
+</ContentPage>
